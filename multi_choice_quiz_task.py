@@ -1,36 +1,42 @@
 from tkinter import *
 
 
-class Quiz:
+class Interface:
     def __init__(self, window):
-        f1 = Frame(window)
-        f2 = Frame(window)
-        f3 = Frame(window)
-        answers = ["Zhang", "Li", "Wang", "Chen"]
         self.v = StringVar()
         self.v.set(None)
-        label1 = Label(f1, text="Question:")
-        question = Label(f2, text="What is the most common last name in the world?")
-        for i in range(len(answers)):
-            Radiobutton(f2, variable=self.v, value=answers[i], text=answers[i], command=self.right_or_wrong)\
-                .grid(row=i+1, column=0)
+        self.q = Quiz()
+        label1 = Label(window, text="Question:")
+        question = Label(window, text=self.q.question)
+        for i in range(len(self.q.answers)):
+            Radiobutton(window, variable=self.v, value=self.q.answers[i], command=self.checker, text=self.q.answers[i])\
+                .grid(row=i + 1, column=1)
+        label1.grid(row=0, column=0)
+        question.grid(row=0, column=1)
 
-        self.answer_display = Label(f3, text="Please select an answer")
+        self.label2 = Label(window, text="Please select an answer")
+        self.label2.grid(row=90, columnspan=2, column=0)
 
-        f1.grid(row=0, column=0, sticky=N)
-        f2.grid(row=0, column=1)
-        f3.grid(row=1, column=0, columnspan=2)
-        label1.grid(row=0, column=0, sticky=N)
-        question.grid(row=0, column=0)
-        self.answer_display.grid(row=0, column=0)
+    def checker(self):
+        t = self.q.check_answer(self.v.get())
+        self.label2.configure(text=t)
 
-    def right_or_wrong(self):
-        if self.v.get() == "Wang":
-            self.answer_display.configure(text="Correct!")
+
+class Quiz:
+    def __init__(self):
+        self.question = "What is the most common last name in the world?"
+        self.answers = ["Zhang", "Li", "Wang", "Chen"]
+        self.display_answer = "Please select a choice"
+
+    def check_answer(self, answer):
+        if answer == "Wang":
+            return "Correct!"
         else:
-            self.answer_display.configure(text="Incorrect!")
+            return "Incorrect!"
 
 
 root = Tk()
-multi_choice_quiz = Quiz(root)
+interface = Interface(root)
+user_answer = interface.v
+checking = Quiz()
 root.mainloop()
